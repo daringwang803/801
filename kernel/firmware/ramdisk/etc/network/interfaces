@@ -1,0 +1,13 @@
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+#	address	192.168.68.179
+#	broadcast 192.168.68.255
+#	netmask 255.255.255.0
+#	gateway 192.168.68.177
+#	pre-up	insmod /lib/modules/`uname -r`/extra/ftmac100.ko
+#	post-down rmmod ftmac100
+#	pre-up	insmod /lib/modules/`uname -r`/extra/ftgmac100.ko
+#	post-down rmmod ftgmac100

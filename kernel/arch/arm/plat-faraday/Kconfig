@@ -1,0 +1,58 @@
+#
+# SoC
+#
+choice
+	prompt "Faraday Platform Type"
+	default MACH_A380
+	depends on ARCH_FARADAY
+
+config MACH_A380
+	bool "A380"
+	select ARM_GIC if CPU_CA9
+	select FARADAY_FTINTC030 if CPU_FA626TE
+	select HAVE_ARM_SCU if SMP
+	select HAVE_ARM_TWD if SMP
+	select FTTMR010
+	select FTSCU100
+	select ARCH_REQUIRE_GPIOLIB
+	select PINCTRL
+	select PINCTRL_A380
+	select PINCTRL_FTSCU010
+	select SND_SOC_WM8731
+	select VIRT_TO_BUS
+	select WIRELESS_EXT
+	select WEXT_PRIV
+	select COMMON_CLK
+	select TIMER_OF if OF
+
+config MACH_LEO
+	bool "LEO"
+	select ARM_GIC
+	select FTSCU100
+	select ARCH_REQUIRE_GPIOLIB
+	select PINCTRL
+	select PINCTRL_LEO
+	select PINCTRL_FTSCU010
+	select PINCTRL_FTSCU010_GROUP
+	select PM_OPP
+	select SND_SOC_WM8731
+	select VIRT_TO_BUS
+	select WIRELESS_EXT
+	select WEXT_PRIV
+	select COMMON_CLK
+	select TIMER_OF if OF
+	select ARM_ARCH_TIMER
+	select FTPWMTMR010
+#	select ARM_LPAE
+
+endchoice
+
+#
+# Core drivers
+#
+
+config CPU_HAS_GIC
+	bool
+	default y if CPU_FMP626 || CPU_CA9
+	help
+	  Use ARM GIC

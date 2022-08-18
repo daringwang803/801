@@ -1,0 +1,661 @@
+/*
+ * Copyright (C) 2018 Faraday, Inc. (www.faraday-tech.com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+ 
+ /dts-v1/;
+ 
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/pinctrl/pinctrl-a380.h>
+ 
+ / {
+	model = "A380";
+	compatible = "arm,faraday-soc";
+	#address-cells = <1>;
+	#size-cells = <1>;
+	
+	aliases {
+		serial0 = &uart0;
+		serial1 = &uart1;
+		i2c010_0 = &i2c0;
+		i2c010_1 = &i2c1;
+		dmac020_0 = &dma0;
+		dmac030_0 = &dma1;
+		dmac030_1 = &dma2;
+	};
+	
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	
+	memory@40000000 {
+		device_type = "memory";
+		reg = <0x40000000 0x10000000>;
+	};
+	
+	chosen {
+		bootargs = "mem=384M console=ttyS0,38400 earlycon=uart8250,mmio32,0x90400000";
+	};
+	
+	clocks {
+		compatible = "faraday,a380evb-clk";
+	
+		osc0: osc0-25mhz {
+			#clock-cells = <0>;
+			compatible = "a380evb,osc0";
+			clock-frequency = <25000000>;
+			clock-output-names = "osc0";
+		};
+	
+		osc1: osc1-33mhz {
+			#clock-cells = <0>;
+			compatible = "a380evb,osc1";
+			clock-frequency = <33000000>;
+			clock-output-names = "osc1";
+		};
+	
+		osc2: osc2-27mhz {
+			#clock-cells = <0>;
+			compatible = "a380evb,osc2";
+			clock-frequency = <27000000>;
+			clock-output-names = "osc2";
+		};
+	
+		osc3: osc3-27mhz {
+			#clock-cells = <0>;
+			compatible = "a380evb,osc3";
+			clock-frequency = <27000000>;
+			clock-output-names = "osc3";
+		};
+	
+		osc4: osc4-33mhz {
+			#clock-cells = <0>;
+			compatible = "a380evb,osc4";
+			clock-frequency = <33000000>;
+			clock-output-names = "osc4";
+		};
+	
+		osc5: osc5-25mhz {
+			#clock-cells = <0>;
+			compatible = "a380evb,osc5";
+			clock-frequency = <25000000>;
+			clock-output-names = "osc5";
+		};
+	
+		twdclk: twdclk {
+			#clock-cells = <0>;
+			compatible = "a380evb,twdclk";
+			clock-frequency = <450000000>;
+			clock-output-names = "twdclk";
+		};
+	
+		pll0: pll0 {
+			#clock-cells = <0>;
+			compatible = "a380evb,pll0";
+			clock-div = <2>;
+			clock-output-names = "pll0";
+			clocks = <&osc0>;
+		};
+	
+		pll1: pll1 {
+			#clock-cells = <0>;
+			compatible = "a380evb,pll1";
+			clock-div = <1>;
+			clock-output-names = "pll1";
+			clocks = <&pll0>;
+		};
+	
+		pll2: pll2 {
+			#clock-cells = <0>;
+			compatible = "a380evb,pll2";
+			clock-div = <2>;
+			clock-output-names = "pll2";
+			clocks = <&osc1>;
+		};
+	
+		pll3: pll3 {
+			#clock-cells = <0>;
+			compatible = "a380evb,pll3";
+			clock-div = <2>;
+			clock-output-names = "pll3";
+			clocks = <&osc2>;
+		};
+	
+		pll4: pll4 {
+			#clock-cells = <0>;
+			compatible = "a380evb,pll4";
+			clock-div = <1>;
+			clock-output-names = "pll4";
+			clocks = <&osc3>;
+		};
+	
+		pll5: pll5 {
+			#clock-cells = <0>;
+			compatible = "a380evb,pll5";
+			clock-div = <1>;
+			clock-output-names = "pll5";
+			clocks = <&osc4>;
+		};
+	
+		pll6: pll6 {
+			#clock-cells = <0>;
+			compatible = "a380evb,pll6";
+			clock-div = <1>;
+			clock-output-names = "pll6";
+			clocks = <&osc5>;
+		};
+	
+		aclk0: aclk0 {
+			#clock-cells = <0>;
+			compatible = "a380evb,aclk0";
+			clock-mult = <1>;
+			clock-div = <2>;
+			clock-output-names = "aclk0";
+			clocks = <&pll4>;
+		};
+	
+		aclk1: aclk1 {
+			#clock-cells = <0>;
+			compatible = "a380evb,aclk1";
+			clock-mult = <1>;
+			clock-div = <1>;
+			clock-output-names = "aclk1";
+			clocks = <&pll3>;
+		};
+	
+		aclk2: aclk2 {
+			#clock-cells = <0>;
+			compatible = "a380evb,aclk2";
+			clock-mult = <1>;
+			clock-div = <2>;
+			clock-output-names = "aclk2";
+			clocks = <&pll4>;
+		};
+	
+		aclk3: aclk3 {
+			#clock-cells = <0>;
+			compatible = "a380evb,aclk3";
+			clock-mult = <1>;
+			clock-div = <1>;
+			clock-output-names = "aclk3";
+			clocks = <&pll2>;
+		};
+	
+		ahb: ahb {
+			#clock-cells = <0>;
+			compatible = "a380evb,ahb";
+			clock-mult = <1>;
+			clock-div = <4>;
+			clock-output-names = "AHB";
+			clocks = <&pll5>;
+		};
+	
+		hclk: hclk {
+			#clock-cells = <0>;
+			compatible = "a380evb,hclk";
+			clock-mult = <1>;
+			clock-div = <4>;
+			clock-output-names = "hclk";
+			clocks = <&pll5>;
+		};
+	
+		apb: apb {
+			#clock-cells = <0>;
+			compatible = "a380evb,apb";
+			clock-mult = <1>;
+			clock-div = <8>;
+			clock-output-names = "APB";
+			clocks = <&pll5>;
+		};
+	
+		pclk: pclk {
+			#clock-cells = <0>;
+			compatible = "a380evb,pclk";
+			clock-mult = <1>;
+			clock-div = <8>;
+			clock-output-names = "pclk";
+			clocks = <&pll5>;
+		};
+	
+		mcpu: mcpu {
+			#clock-cells = <0>;
+			compatible = "a380evb,mcpu";
+			clock-mult = <1>;
+			clock-div = <1>;
+			clock-output-names = "mcpu";
+			clocks = <&pll1>;
+		};
+	
+		scpu: scpu {
+			#clock-cells = <0>;
+			compatible = "a380evb,scpu";
+			clock-mult = <1>;
+			clock-div = <1>;
+			clock-output-names = "scpu";
+			clocks = <&pll4>;
+		};
+	
+		ddrmclk: ddrmclk {
+			#clock-cells = <0>;
+			compatible = "a380evb,ddrmclk";
+			clock-mult = <1>;
+			clock-div = <1>;
+			clock-output-names = "ddrmclk";
+			clocks = <&pll2>;
+		};
+
+		sdclk: sdclk {
+			#clock-cells = <0>;
+			compatible = "a380evb,sdclk";
+			clock-mult = <1>;
+			clock-div = <8>;
+			clock-output-names = "sdclk";
+			clocks = <&pll5>;
+		};
+	
+		spiclk: spiclk {
+			#clock-cells = <0>;
+			compatible = "a380evb,spiclk";
+			clock-mult = <1>;
+			clock-div = <2>;
+			clock-output-names = "spiclk";
+			clocks = <&pll4>;
+		};
+	
+		ssp0clk: ssp0clk {
+			#clock-cells = <0>;
+			compatible = "a380evb,ssp0clk";
+			clock-frequency = <12288000>;
+			clock-output-names = "ssp0clk";
+		};
+	
+		ssp1clk: ssp1clk {
+			#clock-cells = <0>;
+			compatible = "a380evb,ssp1clk";
+			clock-mult = <1>;
+			clock-div = <10>;
+			clock-output-names = "ssp1clk";
+			clocks = <&pll4>;
+		};
+	
+		ssp2clk: ssp2clk {
+			#clock-cells = <0>;
+			compatible = "a380evb,ssp2clk";
+			clock-mult = <1>;
+			clock-div = <10>;
+			clock-output-names = "ssp2clk";
+			clocks = <&pll4>;
+		};
+	};
+	
+	pinctrl0: pinctrl@90a00000 {
+		compatible = "pinctrl-a380", "ftscu010-pinmux";
+		reg = <0x90a00000 0x2000>;
+		
+		pinctrl_ftahbb020: pinctrl_ftahbb020 {
+			scu010,function = <A380_MUX_FTAHBB020>;
+		};
+		
+		pinctrl_ftahbwrap: pinctrl_ftahbwrap {
+			scu010,function = <A380_MUX_FTAHBWRAP>;
+		};
+		
+		pinctrl_ftdmac020: pinctrl_ftdmac020 {
+			scu010,function = <A380_MUX_FTDMAC020>;
+		};
+		
+		pinctrl_ftgpio010: pinctrl_ftgpio010 {
+			scu010,function = <A380_MUX_FTGPIO010>;
+		};
+		
+		pinctrl_fti2c010_0: pinctrl_fti2c010_0 {
+			scu010,function = <A380_MUX_FTI2C010_0>;
+		};
+		
+		pinctrl_fti2c010_1: pinctrl_fti2c010_1 {
+			scu010,function = <A380_MUX_FTI2C010_1>;
+		};
+		
+		pinctrl_ftintc030: pinctrl_ftintc030 {
+			scu010,function = <A380_MUX_FTINTC030>;
+		};
+		
+		pinctrl_ftkbc010: pinctrl_ftkbc010 {
+			scu010,function = <A380_MUX_FTKBC010>;
+		};
+		
+		pinctrl_ftlcd210: pinctrl_ftlcd210 {
+			scu010,function = <A380_MUX_FTLCD210>;
+		};
+		
+		pinctrl_ftlcd210tv: pinctrl_ftlcd210tv {
+			scu010,function = <A380_MUX_FTLCD210TV>;
+		};
+		
+		pinctrl_ftnand024: pinctrl_ftnand024 {
+			scu010,function = <A380_MUX_FTNAND024>;
+		};
+		
+		pinctrl_ftssp010_0: pinctrl_ftssp010_0 {
+			scu010,function = <A380_MUX_FTSSP010_0>;
+		};
+		
+		pinctrl_ftssp010_1: pinctrl_ftssp010_1 {
+			scu010,function = <A380_MUX_FTSSP010_1>;
+		};
+		
+		pinctrl_ftssp010_2: pinctrl_ftssp010_2 {
+			scu010,function = <A380_MUX_FTSSP010_2>;
+		};
+		
+		pinctrl_ftuart010_0: pinctrl_ftuart010_0 {
+			scu010,function = <A380_MUX_FTUART010_0>;
+		};
+		
+		pinctrl_ftuart010_1: pinctrl_ftuart010_1 {
+			scu010,function = <A380_MUX_FTUART010_1>;
+		};
+		
+		pinctrl_ftuart010_2: pinctrl_ftuart010_2 {
+			scu010,function = <A380_MUX_FTUART010_2>;
+		};
+		
+		pinctrl_gbe: pinctrl_gbe {
+			scu010,function = <A380_MUX_GBE>;
+		};
+		
+		pinctrl_vcap300: pinctrl_vcap300 {
+			scu010,function = <A380_MUX_VCAP300>;
+		};
+	};
+	
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "simple-bus";
+		ranges;
+	
+		intc: interrupt-controller@96800000 {
+			compatible = "faraday,ftintc030";
+			interrupt-controller;
+			#interrupt-cells = <2>;
+			#address-cells = <1>;
+			cpu-match-id = <0x300>;
+			reg = <0x96800000 0x1000>;
+		};
+	
+		sys_timer0: timer@90b00000 {
+			compatible = "faraday,fttmr010";
+			interrupt-parent = <&intc>;
+			interrupts = <92 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0x90b00000 0x100>;
+			clocks = <&apb>;
+			clock-names = "APB";
+			status = "okay";
+		};
+	
+		uart0: uart@90400000 {
+			compatible = "of_serial", "ns16550a";
+			interrupt-parent = <&intc>;
+			clock-frequency = <18432000>;
+			reg = <0x90400000 0x1000>;
+			reg-offset = <0>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			no-loopback-test;
+			interrupts = <42 IRQ_TYPE_LEVEL_HIGH>;
+			status = "okay";
+		};
+	
+		uart1: uart@90500000 {
+			compatible = "of_serial", "ns16550a";
+			interrupt-parent = <&intc>;
+			clock-frequency = <18432000>;
+			reg = <0x90500000 0x1000>;
+			reg-offset = <0>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			no-loopback-test;
+			interrupts = <43 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+	
+		wdt0: wdt@90c00000 {
+			compatible = "faraday,ftwdt010";
+			interrupt-parent = <&intc>;
+			reg = <0x90c00000 0x1000>;
+			interrupts = <56 IRQ_TYPE_EDGE_RISING>;
+			clocks = <&pclk>;
+			clock-names = "pclk";
+			status = "disabled";
+		};
+	
+		gpio0: gpio@90100000 {
+			compatible = "faraday,ftgpio010";
+			interrupt-parent = <&intc>;
+			reg = <0x90100000 0x1000>;
+			dev_id = <0>;
+			interrupts = <48 IRQ_TYPE_LEVEL_HIGH>;
+			pinctrl-0 = <&pinctrl_ftgpio010>;
+			pinctrl-names = "sleep";
+			status = "okay";
+		};
+	
+		i2c0: i2c@90200000 {
+			compatible = "faraday,fti2c010";
+			interrupt-parent = <&intc>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x90200000 0x1000>;
+			dev_id = <0>;
+			interrupts = <49 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&pclk>;
+			clock-names = "pclk";
+			pinctrl-0 = <&pinctrl_fti2c010_0>;
+			pinctrl-names = "sleep";
+			status = "okay";
+			
+			wm8731: wm8731@1b {
+				#sound-dai-cells = <0>;
+				compatible = "wlf,wm8731";
+				reg = <0x1b>;
+			};
+		};
+	
+		i2c1: i2c@90300000 {
+			compatible = "faraday,fti2c010";
+			interrupt-parent = <&intc>;
+			reg = <0x90300000 0x1000>;
+			dev_id = <1>;
+			interrupts = <50 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&pclk>;
+			clock-names = "pclk";
+			pinctrl-0 = <&pinctrl_fti2c010_1>;
+			pinctrl-names = "sleep";
+			status = "okay";
+		};
+	
+		dma0: ftdmac020@c0300000 {
+			compatible = "faraday,ftdmac020";
+			interrupt-parent = <&intc>;
+			reg = <0xc0300000 0x1000>;
+			interrupts = <86 IRQ_TYPE_LEVEL_HIGH>,
+			             <87 IRQ_TYPE_LEVEL_HIGH>;
+			pinctrl-0 = <&pinctrl_ftdmac020>;
+			pinctrl-names = "default";
+			status = "okay";
+		};
+	
+		dma1: ftdmac030@92d00000 {
+			compatible = "faraday,ftdmac030";
+			interrupt-parent = <&intc>;
+			#dma-cells = <3>;
+			reg = <0x92d00000 0x1000>;
+			dev_id = <0>;
+			interrupts = <83 IRQ_TYPE_LEVEL_HIGH>;
+			status = "okay";
+		};
+	
+		dma2: ftdmac030@92e00000 {
+			compatible = "faraday,ftdmac030";
+			interrupt-parent = <&intc>;
+			#dma-cells = <3>;
+			reg = <0x92e00000 0x1000>;
+			dev_id = <1>;
+			interrupts = <146 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+	
+		nand0: nand@c0600000 {
+			compatible = "faraday,ftnandc024";
+			interrupt-parent = <&intc>;
+			reg = <0xc0600000 0x2000>,
+			      <0xc0500000 0x1000>;
+			status = "disabled";
+		};
+	
+		spi0: spi@c0a00000 {
+			compatible = "faraday,ftspi020";
+			interrupt-parent = <&intc>;
+			dma-req-sel = <4>;
+			reg = <0xc0a00000 0x1000>;
+			interrupts = <54 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&spiclk>;
+			clock-names = "spiclk";
+			status = "disabled";
+		};
+	
+		spi1: spi@90900000 {
+			compatible = "faraday,ftssp010-spi";
+			interrupt-parent = <&intc>;
+			reg = <0x90900000 0x1000>;
+			interrupts = <53 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ssp2clk>;
+			clock-names = "ssp2clk";
+			status = "disabled";
+		};
+	
+		spi2: spi_slave@90900000 {
+			compatible = "faraday,ftssp010-spi";
+			interrupt-parent = <&intc>;
+			reg = <0x90900000 0x1000>;
+			interrupts = <53 IRQ_TYPE_LEVEL_HIGH>;
+			spi-slave;
+			clocks = <&ssp2clk>;
+			clock-names = "ssp2clk";
+			status = "disabled";
+		};
+	
+		gem0@93000000 {
+			compatible = "cdns,gem";
+			interrupt-parent = <&intc>;
+			reg = <0x93000000 0x1000>;
+			interrupts = <130 IRQ_TYPE_LEVEL_HIGH>;
+			phy-mode = "sgmii";
+			clocks = <&pclk>, <&hclk>;
+			clock-names = "pclk", "hclk";
+			status = "okay";
+		};
+	
+		sd0: sd@c0400000 {
+			compatible = "faraday,ftsdc021-sdhci";
+			interrupt-parent = <&intc>;
+			reg = <0xc0400000 0x1000>;
+			interrupts = <58 IRQ_TYPE_LEVEL_HIGH>;
+			pulse-latch = <1>;
+			no-1-8-v;
+			clocks = <&sdclk>;
+			clock-names = "sdclk";
+			status = "okay";
+		};
+	
+		usb0: usb_otg@c0800000 {
+			compatible = "faraday,fotg210";
+			interrupt-parent = <&intc>;
+			reg = <0xc0800000 0x1000>;
+			interrupts = <61 IRQ_TYPE_LEVEL_HIGH>;
+			status = "okay";
+		};
+	
+		usb1: usb_hcd@c0800000 {
+			compatible = "faraday,fotg210_hcd";
+			interrupt-parent = <&intc>;
+			reg = <0xc0800000 0x1000>;
+			interrupts = <61 IRQ_TYPE_LEVEL_HIGH>;
+			status = "okay";
+		};
+	
+		usb2: usb_udc@c0800000 {
+			compatible = "faraday,fotg210_udc";
+			interrupt-parent = <&intc>;
+			reg = <0xc0800000 0x1000>;
+			interrupts = <61 IRQ_TYPE_LEVEL_HIGH>;
+			status = "okay";
+		};
+	
+		usb4: usb_hcd@c0900000 {
+			compatible = "faraday,fotg210_hcd";
+			interrupt-parent = <&intc>;
+			reg = <0xc0900000 0x1000>;
+			interrupts = <62 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+	
+		i2s0: i2s@90700000 {
+			compatible = "faraday,ftssp010-i2s";
+			interrupt-parent = <&intc>;
+			#sound-dai-cells = <0>;
+			dmas = <&dma1 0 0xFF 6>, <&dma1 0 0xFF 7>;
+			dma-names = "tx", "rx";
+			reg = <0x90700000 0x1000>;
+			interrupts = <51 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&ssp0clk>;
+			clock-names = "ssp0clk";
+			pinctrl-0 = <&pinctrl_ftssp010_0>;
+			pinctrl-names = "default";
+			status = "okay";
+		};
+	
+		sound1 {
+			compatible = "simple-audio-card";
+			simple-audio-card,name = "a380evb";
+			simple-audio-card,format = "i2s";
+			simple-audio-card,bitclock-master = <&sound1_cpu>;
+			simple-audio-card,frame-master = <&sound1_cpu>;
+			simple-audio-card,widgets = "Headphone", "Headphone Jack",
+			                            "Speaker", "Ext Spk",
+			                            "Microphone", "Microphone Jack",
+			                            "Line", "Line In Jack";
+			simple-audio-card,routing = "Headphone Jack", "LHPOUT",
+			                            "Headphone Jack", "RHPOUT",
+			                            "Ext Spk", "LOUT",
+			                            "Ext Spk", "ROUT",
+			                            "MICIN", "Microphone Jack",
+			                            "LLINEIN", "Line In Jack",
+			                            "RLINEIN", "Line In Jack";
+			sound1_cpu: simple-audio-card,cpu {
+				sound-dai = <&i2s0>;
+			};
+			sound1_codec: simple-audio-card,codec {
+				sound-dai = <&wm8731>;
+			};
+		};
+	
+		lcd0:lcd@92900000 {
+			compatible = "faraday,ftlcdc210";
+			interrupt-parent = <&intc>;
+			reg = <0x92900000 0x1000>;
+			interrupts = <71 IRQ_TYPE_LEVEL_HIGH>,
+			             <70 IRQ_TYPE_LEVEL_HIGH>,
+			             <69 IRQ_TYPE_LEVEL_HIGH>,
+			             <68 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&hclk>;
+			clock-names = "hclk";
+			status = "okay";
+		};
+	};
+};

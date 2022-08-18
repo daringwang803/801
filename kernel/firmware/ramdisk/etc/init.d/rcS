@@ -1,0 +1,41 @@
+# rmmod of newer version of busybox needs this direcotry to exist
+mkdir -p /lib/modules/`uname -r`
+
+# enable lo
+ifconfig lo up
+# enable eth0
+ifconfig eth0 192.168.0.80  netmask 255.255.255.0
+ifconfig eth0 up
+# enable eth1
+#ifconfig eth1 192.168.0.90  netmask 255.255.255.0
+#ifconfig eth1 up
+# enable eth2
+#ifconfig eth2 192.168.0.100 netmask 255.255.255.0
+#ifconfig eth2 up
+
+# create /var/log/maillog
+ln -s /var/log/messages /var/log/maillog
+
+# mount all other filesystems
+/bin/echo "Mounting other filesystems ..."
+/bin/mount -a
+
+if [ -f /sbin/mdev ]; then
+    echo /sbin/mdev > /proc/sys/kernel/hotplug
+    mdev -s
+fi
+
+#ubiattach /dev/ubi_ctrl -m 5 -d 0
+#ubimkvol /dev/ubi0 -s 32MiB -N ubi0
+#mount -t ubifs /dev/ubi0_0 /mnt/
+
+#mkdir /mnt/sd
+#mount -t vfat /dev/mmcblk0 /mnt/sd
+
+# insmod mass storage gadget
+#insmod /lib/modules/`uname -r`/libcomposite.ko
+#insmod /lib/modules/`uname -r`/g_mass_storage.ko
+#zg-20200916
+mount -t nfs 192.168.0.110:/home/niubin/nfs /mnt/ -o nolock
+#insmod /mnt/libcomposite.ko
+#insmod /mnt/g_mass_storage.ko

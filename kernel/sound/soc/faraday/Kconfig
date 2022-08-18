@@ -1,0 +1,7 @@
+config SND_SOC_FTSSP010_I2S
+	tristate "Faraday FTSSP010 in I2S mode"
+	select SND_SOC_GENERIC_DMAENGINE_PCM
+	help
+	  Faraday FTSSP010 in I2S mode
+
+	  Say Y here to support the FARADAY FTSSP010 in I2S mode.

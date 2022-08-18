@@ -1,0 +1,35 @@
+if ARCH_FARADAY || COMPILE_TEST
+
+config PINCTRL_FTSCU010
+	bool
+	select PINMUX
+
+config PINCTRL_FTSCU010_GROUP
+	bool
+	depends on PINCTRL_FTSCU010
+
+config PINCTRL_A380
+	bool "Faraday A380 pin controller driver"
+	depends on MACH_A380
+	select PINCTRL_FTSCU010
+
+config PINCTRL_LEO
+	bool "Faraday LEO pin controller driver"
+	depends on MACH_LEO
+	select PINCTRL_FTSCU010
+
+if PINCTRL_LEO
+	config PINCTRL_LEO_MODEX
+	bool "Enable ModeX"
+	
+	config PINCTRL_LEO_RGMII
+        bool "Enable Rgmii"
+
+	config PINCTRL_LEO_RMII
+        bool "Enable Rmii"
+	
+	config PINCTRL_LEO_MII
+        bool "Enable Mii"
+endif
+
+endif

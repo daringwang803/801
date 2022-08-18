@@ -1,0 +1,21 @@
+#
+# arch/arm/mach-leo/Kconfig
+#
+
+if MACH_LEO
+
+menu "Faraday LEO Platform Options"
+	depends on MACH_LEO
+	
+config MACH_LEO_VP
+	bool "Faraday LEO VP EVB"
+	help
+	  Say Y here if you are using FARADAY LEO-VP EVB
+	 
+config FTSCU100
+	bool
+	help
+	  FTSCU100 System Controller
+endmenu
+
+endif
