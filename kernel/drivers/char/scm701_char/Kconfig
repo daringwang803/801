@@ -1,0 +1,25 @@
+#
+# scm701bus devices
+#
+#
+config SCM701_CHAR
+	tristate "scm701 char"
+	depends on MACH_LEO
+	help
+	   scm701 char
+
+if SCM701_CHAR
+
+config SCM701_WATCHDOG
+	tristate "scm701 watchdog"
+	depends on MACH_LEO
+	help
+	   scm701 watchdog
+
+config SCM701_SYSINFO
+	tristate "scm701 sysinfo"
+	depends on MACH_LEO
+	help
+	   scm701 sysinfo
+
+endif # if SCM701_CHAR

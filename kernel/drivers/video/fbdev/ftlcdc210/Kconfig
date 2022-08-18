@@ -1,0 +1,11 @@
+
+config FB_FTLCDC210
+	tristate "Faraday FTLCDC210 LCD Controller support"
+	depends on FB
+	select FB_CFB_FILLRECT
+	select FB_CFB_COPYAREA
+	select FB_CFB_IMAGEBLIT
+	help
+		This framebuffer device driver is for the Faraday LCD
+		Controller.  Faraday LCD Controller provide the building
+		blocks for System on a Chip devices.

@@ -1,0 +1,50 @@
+#
+# arch/arm/mach-a380/Kconfig
+#
+
+if MACH_A380
+
+menu "Faraday A380 Platform Options"
+	depends on MACH_A380
+
+config UART_CLOCK
+	int "UART clock tick rate"
+	default 18432000 if MACH_A380
+	help
+	  The frequency of the UART reference clock.
+	
+config SND_SOC_WM8731_MCLK
+	int "WM8731 master clock rate"
+	default 12288000
+	
+config MACH_A380_VP
+	bool "Faraday A380 VP EVB"
+	help
+	  Say Y here if you are using FARADAY A380-VP EVB
+	
+config FARADAY_CA9_TESTCHIP
+	bool "Use Faraday Cortex-A9 Testchip"
+	depends on CPU_CA9
+	select FTINTC030
+	default n
+	help
+	  Say Y here if you are using FARADAY CORTEX-A9 Testchip
+	  
+config FTSCU100
+	bool
+	help
+	  FTSCU100 System Controller
+	  
+config SERDES_MULTI
+	bool "Support Initial of Serdes(multi mode)"
+	default y
+	  
+config FTPCIE_CDNG3
+	bool "FTPCIE_CDNG3 PCI Express Support"
+	depends on PCI
+	help
+	  FTPCIE_CDNG3 PCI Express Firmware
+	  
+endmenu
+
+endif

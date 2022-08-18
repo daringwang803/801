@@ -1,0 +1,13 @@
+# system initialisation
+#::sysinit:/bin/mount -n -o remount,rw /
+::sysinit:/etc/init.d/rcS
+# run gettys on the serial ports
+ttyS0::respawn:/bin/sh < /dev/ttyS0 2>&1 > /dev/ttyS0
+#ttyS1::respawn:/bin/sh < /dev/ttyS1 2>&1 > /dev/ttyS1
+#ttyS1::respawn:/bin/sh < /dev/ttyS2 2>&1 > /dev/ttyS2
+#ttyPS0::respawn:/bin/sh < /dev/ttyPS0 2>&1 > /dev/ttyPS0
+
+# stuff to do before rebooting
+::ctrlaltdel:/etc/init.d/reboot
+::shutdown:/bin/umount -a -r
+::shutdown:/sbin/swapoff -a

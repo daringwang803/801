@@ -1,0 +1,297 @@
+/*
+ * Copyright (C) 2018 Faraday, Inc. (www.faraday-tech.com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+ 
+ /dts-v1/;
+ 
+ #include <dt-bindings/interrupt-controller/irq.h>
+ 
+ / {
+	model = "tc12ngrc";
+	compatible = "arm,faraday-soc";
+	#address-cells = <1>;
+	#size-cells = <1>;
+	
+	aliases {
+		serial0 = &uart0;
+		serial1 = &uart1;
+		i2c010_0 = &i2c0;
+	};
+	
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	
+	memory@70000000 {
+		device_type = "memory";
+		reg = <0x70000000 0x10000000>;
+	};
+	
+	chosen {
+		bootargs = "mem=256M console=ttyS0,38400 earlycon=uart8250,mmio32,0xfff8c000";
+	};
+	
+	clocks {
+		compatible = "faraday,tc12ngrc-clk";
+	
+		osc0: osc0-25mhz {
+			#clock-cells = <0>;
+			compatible = "tc12ngrc,osc0";
+			clock-frequency = <25000000>;
+			clock-output-names = "osc0";
+		};
+	
+		pll0: pll0 {
+			#clock-cells = <0>;
+			compatible = "tc12ngrc,pll0";
+			clock-div = <1>;
+			clock-output-names = "pll0";
+			clocks = <&osc0>;
+		};
+	
+		ahb: ahb {
+			#clock-cells = <0>;
+			compatible = "tc12ngrc,ahb";
+			clock-mult = <1>;
+			clock-div = <4>;
+			clock-output-names = "AHB";
+			clocks = <&pll0>;
+		};
+	
+		hclk: hclk {
+			#clock-cells = <0>;
+			compatible = "tc12ngrc,hclk";
+			clock-mult = <1>;
+			clock-div = <4>;
+			clock-output-names = "hclk";
+			clocks = <&pll0>;
+		};
+	
+		apb: apb {
+			#clock-cells = <0>;
+			compatible = "tc12ngrc,apb";
+			clock-mult = <1>;
+			clock-div = <8>;
+			clock-output-names = "APB";
+			clocks = <&pll0>;
+		};
+	
+		pclk: pclk {
+			#clock-cells = <0>;
+			compatible = "tc12ngrc,pclk";
+			clock-mult = <1>;
+			clock-div = <8>;
+			clock-output-names = "pclk";
+			clocks = <&pll0>;
+		};
+	
+		cpu: cpu {
+			#clock-cells = <0>;
+			compatible = "tc12ngrc,cpu";
+			clock-mult = <1>;
+			clock-div = <1>;
+			clock-output-names = "cpu";
+			clocks = <&pll0>;
+		};
+	
+		ddrmclk: ddrmclk {
+			#clock-cells = <0>;
+			compatible = "tc12ngrc,ddrmclk";
+			clock-mult = <1>;
+			clock-div = <4>;
+			clock-output-names = "ddrmclk";
+			clocks = <&pll0>;
+		};
+	
+		spiclk: spiclk {
+			#clock-cells = <0>;
+			compatible = "tc12ngrc,spiclk";
+			clock-mult = <1>;
+			clock-div = <4>;
+			clock-output-names = "spiclk";
+			clocks = <&pll0>;
+		};
+	};
+	
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "simple-bus";
+		ranges;
+	
+		pinctrl0: pinctrl@fffd0000 {
+			compatible = "pinctrl-tc12ngrc", "ftscu010-pinmux";
+			reg = <0xfffd0000 0x2000>;
+		};
+	
+		intc: interrupt-controller@ffff0000 {
+			compatible = "faraday,ftintc020";
+			interrupt-controller;
+			#interrupt-cells = <2>;
+			#address-cells = <1>;
+			reg = <0xffff0000 0x1000>;
+		};
+	
+		sys_timer0: timer@fff70000 {
+			compatible = "faraday,fttmr010";
+			interrupt-parent = <&intc>;
+			interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0xfff70000 0x100>;
+			clocks = <&apb>;
+			clock-names = "APB";
+			status = "okay";
+		};
+	
+		sys_timer1: timer@fffb8000 {
+			compatible = "faraday,ftpwmtmr010";
+			interrupt-parent = <&intc>;
+			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
+			reg = <0xfffb8000 0x1000>;
+			clocks = <&apb>;
+			clock-names = "APB";
+			status = "disabled";
+		};
+	
+		uart0: uart@fff8c000 {
+			compatible = "of_serial", "ns16550a";
+			interrupt-parent = <&intc>;
+			clock-frequency = <18432000>;
+			reg = <0xfff8c000 0x1000>;
+			reg-offset = <0>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			no-loopback-test;
+			interrupts = <12 IRQ_TYPE_LEVEL_HIGH>;
+			status = "okay";
+		};
+	
+		uart1: uart@fff90000 {
+			compatible = "of_serial", "ns16550a";
+			interrupt-parent = <&intc>;
+			clock-frequency = <18432000>;
+			reg = <0xfff90000 0x1000>;
+			reg-offset = <0>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			no-loopback-test;
+			interrupts = <13 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+	
+		efuse0@fff00000 {
+			compatible = "faraday,ftc-efuse";
+			interrupt-parent = <&intc>;
+			reg = <0xfff00000 0x10000>;
+			efuse-size = <64>;
+			status = "okay";
+		};
+	
+		efuse1@fff10000 {
+			compatible = "faraday,ftc-efuse";
+			interrupt-parent = <&intc>;
+			reg = <0xfff10000 0x10000>;
+			efuse-size = <64>;
+			status = "disabled";
+		};
+	
+		gpio@fff40000 {
+			compatible = "faraday,ftgpio010";
+			interrupt-parent = <&intc>;
+			reg = <0xfff40000 0x1000>;
+			dev_id = <0>;
+			interrupts = <7 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+	
+		i2c0: i2c@fff88000 {
+			compatible = "faraday,ftiic010";
+			interrupt-parent = <&intc>;
+			reg = <0xfff88000 0x1000>;
+			dev_id = <0>;
+			interrupts = <14 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&pclk>;
+			clock-names = "pclk";
+			status = "okay";
+		};
+	
+		wdt0: wdt@fff30000 {
+			compatible = "faraday,ftwdt010";
+			interrupt-parent = <&intc>;
+			reg = <0xfff30000 0x1000>;
+			interrupts = <9 IRQ_TYPE_EDGE_RISING>;
+			clocks = <&pclk>;
+			clock-names = "pclk";
+			status = "disabled";
+		};
+	
+		dma0: ftdmac020@00f00000 {
+			compatible = "faraday,ftdmac020";
+			interrupt-parent = <&intc>;
+			reg = <0x00f00000 0x1000>;
+			interrupts = <6 IRQ_TYPE_LEVEL_HIGH>;
+			dev_id = <0>;
+			status = "okay";
+		};
+	
+		spi0: spi@00500000 {
+			compatible = "faraday,ftspi020";
+			interrupt-parent = <&intc>;
+			dma-req-sel = <4>;
+			reg = <0x00500000 0x1000>;
+			interrupts = <5 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&spiclk>;
+			clock-names = "spiclk";
+			status = "okay";
+		};
+	
+		usb0: usb_hcd@00700000 {
+			compatible = "faraday,fotg210_hcd";
+			interrupt-parent = <&intc>;
+			reg = <0x00700000 0x1000>;
+			interrupts = <1 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+	
+		usb1: usb_udc@00600000 {
+			compatible = "faraday,fotg210_udc";
+			interrupt-parent = <&intc>;
+			reg = <0x00600000 0x1000>;
+			interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+	
+		gmac0: gmac@00c00000 {
+			compatible = "faraday,ftgmac030";
+			interrupt-parent = <&intc>;
+			reg = <0x00c00000 0x1000>;
+			interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
+			phy-mode = "rgmii";
+			clocks = <&pclk>, <&hclk>;
+			clock-names = "pclk", "hclk";
+			status = "okay";
+		};
+	
+		pwm0: pwm@fffb8000 {
+			compatible = "faraday,pwm-ftpwmtmr010";
+			interrupt-parent = <&intc>;
+			reg = <0xfffb8000 0x1000>;
+			interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
+			clocks = <&apb>;
+			clock-names = "APB";
+			status = "disabled";
+		};
+	
+		adc0: adc@fffc0000 {
+			compatible = "faraday,ftadcc010";
+			interrupt-parent = <&intc>;
+			reg = <0xfffc0000 0x1000>;
+			interrupts = <15 IRQ_TYPE_LEVEL_HIGH>;
+			status = "disabled";
+		};
+	};
+};
