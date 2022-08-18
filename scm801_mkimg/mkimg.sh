@@ -40,14 +40,16 @@ mv kernel.img ../img/kernel.img -f
 
 cd ../temp
 
-#gpt     1M    1024*1024*512=2048   
+#gpt     1M    1024*1024/512=2048   
 #kernel  32M 	32*1024*1024/512 =65536
 #ubuntu  1G	1024*1024*1024/512=2097152
-#count = 2048+65536+2097152=2164736
+#ubuntu  2G     2*1024*1024*1024/512=4194304
+#ubuntu size 1G: count = 2048+65536+2097152=2164736
+#ubuntu size 2G: count = 2048+65536+4194304=4261888
 
 
 echo "\n${red}make linux_burn_img...${res}"
-dd if=/dev/zero of=linux_burn_image bs=512 count=2164736
+dd if=/dev/zero of=linux_burn_image bs=512 count=4261888
 
 
 echo "\n${red}make partition into linux_burn_image...${res}"
