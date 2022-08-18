@@ -1,0 +1,48 @@
+/dts-v1/;
+
+/ {
+	description = "scm801 linux kernel and dtb";
+	#address-cells = <1>;
+
+	images {
+		kernel@1{
+			description = "scm801 linux kernel";
+			data = /incbin/("../img/zImage");
+			type = "kernel";
+			arch = "arm";
+			os = "linux";
+			compression = "none";
+			load = <0x82000000>;
+			entry = <0x82000000>;
+			hash-1 {
+				algo = "crc32";
+			};
+		};
+
+	
+		
+		fdt@1 {
+			description = "scm801 fdt";
+			data = /incbin/("../img/faraday_leo.dtb");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			load = <0x83000000>;
+			hash@1 {
+				algo = "crc32";
+			};
+		};
+        };
+	
+	configurations {
+		default = "config@1";
+		config@1 {
+			description = "scm801 smp boot linux kernel";
+			kernel = "kernel@1";
+			fdt = "fdt@1";
+		};
+	};
+};
+
+
+
