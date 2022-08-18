@@ -412,6 +412,7 @@
 		reg = <0x28000000 0xA000>;
 
 		scu010,modex = <
+			LEO_Mode_X_UART_8
 			LEO_Mode_X_GPIO0_26
 			LEO_Mode_X_GPIO0_25
 #if 0
@@ -424,8 +425,8 @@
 #endif
 			LEO_Mode_X_GPIO0_20
 			LEO_Mode_X_GPIO0_19
-#if 0
 			LEO_Mode_X_GPIO0_18
+#if 0
 			LEO_Mode_X_GPIO0_17
 #endif
 			LEO_Mode_X_GPIO0_3
@@ -528,13 +529,13 @@
 			scu010,schmitt-trigger;
 			scu010,function = <LEO_MUX_FTGPIO010>;
 			scu010,pins = <
-				LEO_PIN_X_LC_PCLK        //GPIO0[0] - Mode5 / Mode7
+				//LEO_PIN_X_LC_PCLK        //GPIO0[0] - Mode5 / Mode7
 				//LEO_PIN_X_UART5_TX       //GPIO0[0] - Mode3 / GPIO0[2] - ModeX
 				//LEO_PIN_X_UART5_RX       //GPIO0[1] - Mode3 / GPIO0[3] - ModeX   
-				//LEO_PIN_X_LC_VS          //GPIO0[1] - Mode5 / Mode7
-				//LEO_PIN_X_LC_HS          //GPIO0[2] - Mode5 / Mode7
-				//LEO_PIN_X_LC_DE          //GPIO0[3] - Mode5 / Mode7
-				//LEO_PIN_X_LC_DATA_0      //GPIO0[4] - Mode5 / Mode7
+				LEO_PIN_X_LC_VS          //GPIO0[1] - Mode5 / Mode7
+				LEO_PIN_X_LC_HS          //GPIO0[2] - Mode5 / Mode7
+				LEO_PIN_X_LC_DE          //GPIO0[3] - Mode5 / Mode7
+				LEO_PIN_X_LC_DATA_0      //GPIO0[4] - Mode5 / Mode7
 				//LEO_PIN_X_LC_DATA_1      //GPIO0[5] - Mode5 / Mode7
 				LEO_PIN_X_LC_DATA_2      //GPIO0[6] - Mode5 / Mode7
 				//LEO_PIN_X_LC_DATA_3      //GPIO0[7] - Mode5 / Mode7
@@ -555,13 +556,13 @@
 				//LEO_PIN_X_LC_DATA_10     //GPIO0[14] - Mode5 / Mode7
 				//LEO_PIN_X_MII_TXD_2      //GPIO0[14] - Mode1 / Mode3 / Mode4
 				//LEO_PIN_X_MII_TXD_3      //GPIO0[15] - Mode1 / Mode3 / Mode4
-				//LEO_PIN_X_LC_DATA_11     //GPIO0[15] - Mode5 / Mode7
+				LEO_PIN_X_LC_DATA_11     //GPIO0[15] - Mode5 / Mode7
 				//LEO_PIN_X_LC_DATA_12     //GPIO0[16] - Mode5 / Mode7
 				//LEO_PIN_X_MII_CRS        //GPIO0[16] - Mode1 / Mode3 / Mode4
 				//LEO_PIN_X_LC_DATA_13     //GPIO0[17] - Mode5 / Mode7
 				//LEO_PIN_X_MII_COL        //GPIO0[17] - Mode1 / Mode3 / Mode4
 				//LEO_PIN_X_LC_DATA_14     //GPIO0[18] - Mode5 / Mode7
-				//LEO_PIN_X_I2S0_TXD       //GPIO0[18] - ModeX 
+				LEO_PIN_X_I2S0_TXD       //GPIO0[18] - ModeX 
 				//LEO_PIN_X_LC_DATA_15     //GPIO0[19] - Mode5 / Mode7
 				//LEO_PIN_X_UART2_NRTS     //GPIO0[19] - ModeX 
 				//LEO_PIN_X_LC_DATA_16     //GPIO0[20] - Mode5 / Mode7
@@ -573,14 +574,13 @@
 				//LEO_PIN_X_LC_DATA_19     //GPIO0[23] - Mode5 / Mode7
 				//LEO_PIN_X_LC_DATA_20     //GPIO0[24] - Mode5 / Mode7
 				//LEO_PIN_X_MII_TX_EN      //GPIO0[24] - Mode7
-				//LEO_PIN_X_LC_DATA_21     //GPIO0[25] - Mode5 / Mode7
+				LEO_PIN_X_LC_DATA_21     //GPIO0[25] - Mode5 / Mode7
 				//LEO_PIN_X_I2S0_FS        //GPIO0[25] - ModeX
 				//LEO_PIN_X_RMII0_RXD_1    //GPIO0[26] - ModeX 
 				//LEO_PIN_X_LC_DATA_22     //GPIO0[26] - Mode5 / Mode7
 				LEO_PIN_X_LC_DATA_23     //GPIO0[27] - Mode5 / Mode7
 				LEO_PIN_X_I2S_MCLK       //GPIO0[28] - Mode2 / Mode6 / Mode7
 				//LEO_PIN_X_MII_MDC        //GPIO0[31] - Mode7
-				LEO_PIN_X_LC_DE         //gpio0[3]
 			>;
 		};
 		
@@ -1098,7 +1098,7 @@
 			pinctrl-0 = <&pinctrl_ftuart010_6>;
 			pinctrl-names = "sleep";
 			serial = <6>;
-			status = "disabled";
+			status = "okay";
 		};
 		
 		uart7: uart@56b00000 {
@@ -1114,21 +1114,23 @@
 			pinctrl-0 = <&pinctrl_ftuart010_7>;
 			pinctrl-names = "sleep";
 			serial = <7>;
-			status = "disabled";
+			status = "okay";
 		};
 		
 		uart8: uart_sir@56c00000 {
-			compatible = "faraday,ftuart010_sir";
+			compatible = "of_serial", "ns16550a";
 			interrupt-parent = <&gic>;
+			clock-frequency = <58823529>;
 			reg = <0x56c00000 0x1000>;
 			interrupts = <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>;
-			baud = <115200>;
-			clock-names = "irda";
-			clocks = <&irdaclk>;
+			reg-offset = <0>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			no-loopback-test;
 			pinctrl-0 = <&pinctrl_ftuart010_8>;
 			pinctrl-names = "default";
 			serial = <8>;
-			status = "disabled";
+			status = "okay";
 		};
 		
 		uart9: uart@57100000 {
@@ -1144,7 +1146,7 @@
 			pinctrl-0 = <&pinctrl_ftuart010_9>;
 			pinctrl-names = "sleep";
 			serial = <9>;
-			status = "disabled";
+			status = "okay";
 		};
 		
 		sys_timer0: timer@55300000 {
