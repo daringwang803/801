@@ -43,10 +43,15 @@
 *.pdb
 
 # Kernel Module Compile Results
-*.mod*
+#*.mod*
 *.cmd
 .tmp_versions/
 modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+
+*.builtin
+*.tmp
+*.mod.c
